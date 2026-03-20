@@ -1,0 +1,60 @@
+name: Release Package
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web bundle
+        run: pnpm build
+
+      - name: Assemble runtime package
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          VERSION="${{ github.event.release.tag_name }}"
+          PKG_DIR="zx_lib-${VERSION}"
+
+          mkdir -p "$PKG_DIR/web"
+          cp fxmanifest.lua "$PKG_DIR/"
+          cp README.md "$PKG_DIR/"
+          cp -R modules "$PKG_DIR/"
+          cp -R resource "$PKG_DIR/"
+          cp -R web/dist "$PKG_DIR/web/dist"
+
+          zip -r "zx_lib-${VERSION}-built.zip" "$PKG_DIR"
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: zx_lib-${{ github.event.release.tag_name }}-built.zip
