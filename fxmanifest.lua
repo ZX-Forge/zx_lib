@@ -8,7 +8,7 @@ node_version '22'
 name 'zx_lib'
 author 'Zlexif'
 description 'zx_lib FiveM utility library with interfaces and modules.'
-version '0.1.0'
+version '0.1.1'
 repository 'https://github.com/zlexif/zx_lib'
 
 ui_page 'web/dist/index.html'
