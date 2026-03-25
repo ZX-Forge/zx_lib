@@ -580,7 +580,7 @@ function App() {
           }}
           onToggleTextUI={() => setIsTextUIOpen(!isTextUIOpen)}
           onToggleRadialMenu={() => setIsRadialMenuOpen(!isRadialMenuOpen)}
-          onStartProgress={(duration: any, label: any) => setProgressState({ id: generateId(), isVisible: true, duration, label, cancellable: false })}
+          onStartProgress={(duration: any, label: any) => setProgressState({ id: generateId(), isVisible: true, duration, label, cancellable: true })}
           onOpenAlert={() => {
             setAlertState({
               title: 'Browser Alert',
